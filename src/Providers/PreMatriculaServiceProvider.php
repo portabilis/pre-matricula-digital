@@ -95,7 +95,9 @@ class PreMatriculaServiceProvider extends LaravelServiceProvider
         ]);
 
         Auth::viaRequest('prematricula', function (Request $request) {
-            if ($request->bearerToken() === config('prematricula.token')) {
+            $token = config('prematricula.token');
+
+            if (!empty($token) && hash_equals((string) $token, (string) $request->bearerToken())) {
                 return new GenericUser([
                     'name' => 'Visitante',
                 ]);

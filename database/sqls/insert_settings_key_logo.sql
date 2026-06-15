@@ -13,5 +13,5 @@ INSERT INTO public.settings(
     'URL referente à logo do Pré-matrícula Digital',
     now(),
     now(),
-    (SELECT id FROM public.settings_categories WHERE name = 'Pré-matrícula Digital' LIMIT 1)
+    (SELECT id FROM public.settings_categories WHERE name = 'Pré-Matrícula Digital' LIMIT 1)
 	);

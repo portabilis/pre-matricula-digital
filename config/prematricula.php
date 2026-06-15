@@ -12,25 +12,25 @@ return [
 
     'video_intro_url' => null,
 
-    'ibge_codes' => env('PMD_IBGE_CODES', ''),
+    'ibge_codes' => '',
 
-    'city' => env('PMD_CITY', 'Içara'),
+    'city' => 'Içara',
 
-    'state' => env('PMD_STATE', 'SC'),
+    'state' => 'SC',
 
     'map' => [
-        'lat' => env('PMD_MAP_LATITUDE', -28.7),
-        'lng' => env('PMD_MAP_LONGITUDE', -49.3),
-        'zoom' => env('PMD_MAP_ZOOM', 13),
+        'lat' => -28.7,
+        'lng' => -49.3,
+        'zoom' => 13,
     ],
 
-    'logo' => env('PMD_LOGO', '/intranet/imagens/brasao-republica.png'),
+    'logo' => '/intranet/imagens/brasao-republica.png',
 
-    'slogan' => env('PMD_SLOGAN', 'Prefeitura Municipal de '),
+    'slogan' => 'Prefeitura Municipal de ',
 
     'standalone' => !env('PMD_LEGACY', true),
 
-    'legacy' => env('PMD_LEGACY', true),
+    'legacy' => true,
 
     'link_to_restrict_area' => null,
 
