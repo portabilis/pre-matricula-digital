@@ -90,7 +90,7 @@ jobs:
       - name: Plug and play dependencies
         run: |
           composer config allow-plugins true
-          composer plug-and-play:add orchestra/testbench ^10.0
+          composer plug-and-play:add orchestra/testbench ^11.0
           composer plug-and-play:add pestphp/pest ^4.0
           composer plug-and-play
         env:
