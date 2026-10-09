@@ -34,6 +34,7 @@ export function useLoader<T>(
           }
 
           errors.value = error;
+          reject(error);
         })
         .finally(() => {
           loading.value = false;

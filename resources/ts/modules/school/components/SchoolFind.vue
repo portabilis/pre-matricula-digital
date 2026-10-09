@@ -59,12 +59,13 @@
             :lat="lat"
             :lng="lng"
             :zoom="zoom"
+            :pontos="pontosDasEscolas"
             style="height: 400px"
           >
             <template #default="{ map }">
               <google-maps-marker-component
                 v-if="marker.position"
-                :map="(map as google.maps.Map)"
+                :map="map"
                 :marker="marker"
               >
                 <template #default>
@@ -73,7 +74,7 @@
               </google-maps-marker-component>
               <google-maps-markers
                 :markers="schoolsInMap"
-                :map="(map as google.maps.Map)"
+                :map="map"
               >
                 <template #default="{ marker: markerSlot }">
                   <div>
@@ -102,7 +103,7 @@ import {
   ShowVacanciesReturn,
   Vacancies,
 } from '@/modules/school/types';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import GoogleMaps from '@/components/maps/GoogleMaps.vue';
 import { GoogleMapsMarker } from '@/types';
 import GoogleMapsMarkerComponent from '@/components/maps/GoogleMapsMarker.vue';
@@ -113,6 +114,7 @@ import XBtn from '@/components/elements/buttons/XBtn.vue';
 import XCard from '@/components/elements/cards/XCard.vue';
 import XCardSection from '@/components/elements/cards/XCardSection.vue';
 import XField from '@/components/x-form/XField.vue';
+import { localizarEndereco } from '@/maps/localizarEndereco';
 import { markerAddress } from '@/util';
 import { useGeneralStore } from '@/store/general';
 import { useLoader } from '@/composables';
@@ -132,7 +134,6 @@ const address = ref(null);
 const marker = ref<GoogleMapsMarker>(markerAddress());
 
 const grade = ref<string>();
-const geocoder = ref<google.maps.Geocoder>();
 
 const grades = computed(() => {
   const grades: GradeFiltered[] = [];
@@ -171,12 +172,26 @@ const schoolsInMap = computed<GoogleMapsMarker[]>(() =>
       }
       return true;
     })
-    .filter((school) => school.lat && school.lng)
     .map((school) => ({
       ...school,
       title: school.name,
-      position: new google.maps.LatLng(school.lat, school.lng),
+      position: {
+        lat: Number(school.lat),
+        lng: Number(school.lng),
+      },
     }))
+    .filter(
+      (school) =>
+        Number.isFinite(school.position.lat) &&
+        Number.isFinite(school.position.lng) &&
+        !(school.position.lat === 0 && school.position.lng === 0)
+    )
+);
+
+const pontosDasEscolas = computed(() =>
+  schoolsInMap.value
+    .map((escola) => escola.position)
+    .filter((ponto): ponto is { lat: number; lng: number } => ponto?.lat != null && ponto?.lng != null)
 );
 
 const getData = () => {
@@ -191,7 +206,7 @@ const getData = () => {
 };
 getData();
 
-const searchAddress: () => void = () => {
+const searchAddress = async () => {
   if (!address.value) {
     return;
   }
@@ -199,28 +214,14 @@ const searchAddress: () => void = () => {
     .filter((i) => i)
     .join(', ');
   loadingSearchAddress.value = true;
-  geocoder.value
-    ?.geocode(
-      { address: filteredAddress },
-      (
-        results: google.maps.GeocoderResult[] | null,
-        status: google.maps.GeocoderStatus
-      ) => {
-        if (status === 'OK' && results) {
-          lat.value = results[0].geometry.location.lat();
-          lng.value = results[0].geometry.location.lng();
-          marker.value.position = results[0].geometry.location;
-        }
-      }
-    )
-    .finally(() => {
-      loadingSearchAddress.value = false;
-    });
+  const ponto = await localizarEndereco(filteredAddress);
+  if (ponto) {
+    lat.value = ponto.lat;
+    lng.value = ponto.lng;
+    marker.value.position = { lat: ponto.lat, lng: ponto.lng };
+  }
+  loadingSearchAddress.value = false;
 };
-
-onMounted(() => {
-  geocoder.value = new google.maps.Geocoder();
-});
 </script>
 
 <style>

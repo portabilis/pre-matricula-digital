@@ -10,6 +10,7 @@ use iEducar\Packages\PreMatricula\Events\PreRegistrationTransferEvent;
 use iEducar\Packages\PreMatricula\Http\Controllers\AuthController;
 use iEducar\Packages\PreMatricula\Http\Controllers\ConfigController;
 use iEducar\Packages\PreMatricula\Http\Controllers\ExportController;
+use iEducar\Packages\PreMatricula\Http\Controllers\LocalizarEnderecoController;
 use iEducar\Packages\PreMatricula\Http\Controllers\ReportController;
 use iEducar\Packages\PreMatricula\Listeners\PreRegistrationTransferNotificationListener;
 use Illuminate\Auth\GenericUser;
@@ -54,6 +55,7 @@ class PreMatriculaServiceProvider extends LaravelServiceProvider
             Route::get('auth/check', AuthController::class . '@check');
             Route::get('auth/login', AuthController::class . '@login');
 
+            Route::get('pre-matricula-localizar', LocalizarEnderecoController::class);
             Route::get('pre-matricula-export', ExportController::class . '@export');
             Route::get('pre-matricula-report', ReportController::class . '@preRegistrationReport');
         });

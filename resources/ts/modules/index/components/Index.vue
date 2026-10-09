@@ -259,7 +259,11 @@ export default defineComponent({
       getProceses();
     }
     getData();
-    if (getCookie(cookieName.value) !== '1' && showHowToDoVideo.value) {
+    if (
+      getCookie(cookieName.value) !== '1' &&
+      showHowToDoVideo.value &&
+      getConfig.value.video_intro_url
+    ) {
       showVideoTutorial.value = true;
     }
 

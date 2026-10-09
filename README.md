@@ -109,8 +109,7 @@ Para o Pré-Matrícula Digital funcionar, alguns campos no i-Educar precisam est
 3. Turmas com vagas disponíveis no ano letivo
 4. Os cursos devem ter o checkbox "Importar os dados do curso para o recurso de Pré-Matrícula Digital?"
 5. As séries devem ter o checkbox "Importar os dados da série para o recurso de Pré-Matrícula Digital?"
-6. Uma chave de API válida do [Google Maps](https://developers.google.com/maps) com acesso a `Maps JavaScript API` e `Geocoding API`
-7. Uma chave de API válida do [Froala Editor](https://froala.com/)
+6. Uma chave de API válida do [Froala Editor](https://froala.com/)
 
 ### Desenvolvimento
 
@@ -122,8 +121,7 @@ O Pré-Matrícula Digital é construído utilizando as tecnologias:
 - [Laravel](https://laravel.com/)
 - [Vue.js](https://vuejs.org)
 - [Bootstrap](https://getbootstrap.com)
-- [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/overview)
-- [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/overview)
+- [Leaflet](https://leafletjs.com/) e [OpenStreetMap](https://www.openstreetmap.org/)
 
 #### Dependências
 

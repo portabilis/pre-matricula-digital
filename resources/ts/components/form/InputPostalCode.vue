@@ -25,7 +25,8 @@
 </template>
 
 <script lang="ts">
-import { PropType, computed, defineComponent, onMounted, ref } from 'vue';
+import { PropType, computed, defineComponent, ref } from 'vue';
+import { localizarEndereco } from '@/maps/localizarEndereco';
 import { Nullable } from '@/types';
 import XBtn from '@/components/elements/buttons/XBtn.vue';
 import axios from 'axios';
@@ -48,7 +49,6 @@ export default defineComponent({
   setup(props, { attrs, emit }) {
     const store = useGeneralStore();
 
-    const geocoder = ref<google.maps.Geocoder>();
     const mask = ref('#####-###');
     const loading = ref(false);
 
@@ -76,41 +76,26 @@ export default defineComponent({
         });
     };
 
-    const searchFromGoogle = () => {
-      if (!geocoder.value) return;
+    const searchFromGoogle = async () => {
+      const ponto = await localizarEndereco(`${store.entity.city}, ${store.entity.state}`);
+      const texto = ponto?.endereco || '';
+      const city = texto.includes(store.entity.city);
+      const state = texto.includes(store.entity.state);
 
-      const address = /* ${model.value},  */ `${store.entity.city}, ${store.entity.state}`;
+      if (ponto && city && state) {
+        emit('change:address', {
+          logradouro: null,
+          complemento: null,
+          bairro: null,
+          localidade: store.entity.city,
+          uf: store.entity.state,
+          ibge: null,
+        });
+        return;
+      }
 
-      geocoder.value.geocode(
-        { address },
-        (
-          results: Nullable<google.maps.GeocoderResult[]>,
-          status: google.maps.GeocoderStatus
-        ) => {
-          if (status === 'OK' && results) {
-            const { formatted_address: result } = results[0];
-            const city = result.includes(store.entity.city);
-            const state = result.includes(store.entity.state);
-            if (city && state) {
-              emit('change:address', {
-                logradouro: null,
-                complemento: null,
-                bairro: null,
-                localidade: store.entity.city,
-                uf: store.entity.state,
-                ibge: null,
-              });
-              return;
-            }
-          }
-          emit('notFound');
-        }
-      );
+      emit('notFound');
     };
-
-    onMounted(() => {
-      geocoder.value = new google.maps.Geocoder();
-    });
 
     return {
       mask,

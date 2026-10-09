@@ -29,7 +29,7 @@ type ProcessTypes =
 export interface MarkerAddress {
   id: number;
   title: string;
-  position: Nullable<google.maps.LatLng>;
+  position: Nullable<{ lat: number; lng: number }>;
   config: {
     icon: {
       path: string;

@@ -10,7 +10,7 @@ return [
 
     'show_how_to_do_video' => true,
 
-    'video_intro_url' => null,
+    'video_intro_url' => 'https://www.youtube.com/embed/ltXDgjS-XpA?html5=1',
 
     'ibge_codes' => '',
 
@@ -19,6 +19,7 @@ return [
     'state' => 'SC',
 
     'map' => [
+        // Coordenada de fábrica. O mapa usa a cidade da instituição quando este par não foi alterado.
         'lat' => -28.7,
         'lng' => -49.3,
         'zoom' => 13,

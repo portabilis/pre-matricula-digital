@@ -23,7 +23,7 @@ type Grade {
   name: String!
   startBirth: Date @rename(attribute: "start_birth")
   endBirth: Date @rename(attribute: "end_birth")
-  course: Course!
+  course: Course
 }
 
 extend type Query @guard(with: ["web", "sanctum", "prematricula"]) {

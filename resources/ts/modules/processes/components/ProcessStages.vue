@@ -1,7 +1,17 @@
 <template>
   <main class="container" style="max-width: 740px">
-    <h2 class="font-muli-20-primary">Crie o processo de pré-matrícula</h2>
-    <p>
+    <h2 class="font-muli-20-primary">
+      {{
+        editando
+          ? 'Editar períodos'
+          : 'Crie o processo de pré-matrícula'
+      }}
+    </h2>
+    <p v-if="editando">
+      Ajuste os parâmetros de cada período: matrícula, rematrícula e lista de
+      espera. O período aberto a partir do processo aparece primeiro.
+    </p>
+    <p v-else>
       Crie os períodos de pré-matrícula que deseja para o seu processo. Cada
       processo poderá conter mais de um período de pré-matrícula, sendo as
       opções: um período de rematrícula e/ou um de matrícula. Você também pode
@@ -203,7 +213,7 @@ import XField from '@/components/x-form/XField.vue';
 import { analytics } from '@/packages';
 import { useGeneralStore } from '@/store/general';
 import { useLoader } from '@/composables';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -234,6 +244,8 @@ export default defineComponent({
     const { page: pageview } = analytics();
 
     const router = useRouter();
+    const route = useRoute();
+    const editando = computed(() => route.query.de === 'consulta');
 
     const store = useGeneralStore();
 
@@ -287,6 +299,14 @@ export default defineComponent({
           stages: stagesToPost,
         })
       ).then(() => {
+        if (editando.value) {
+          router.push({
+            name: 'process.show',
+            params: { id: props.id },
+          });
+          return;
+        }
+
         router.push({
           name: 'process.check',
           params: {
@@ -310,6 +330,14 @@ export default defineComponent({
     };
 
     const handleClickBack = () => {
+      if (editando.value) {
+        router.push({
+          name: 'process.show',
+          params: { id: props.id },
+        });
+        return;
+      }
+
       router.push({
         name: 'process.fields',
         params: {
@@ -325,7 +353,19 @@ export default defineComponent({
           id: props.id,
         })
       ).then((res) => {
-        stages.value = res.stages;
+        const etapa = String(route.query.etapa || '');
+        stages.value = [...res.stages].sort((a, b) => {
+          if (!etapa) {
+            return 0;
+          }
+          if (String(a.id) === etapa) {
+            return -1;
+          }
+          if (String(b.id) === etapa) {
+            return 1;
+          }
+          return 0;
+        });
 
         if (props.newProcess === 'true') {
           pageview({
@@ -356,7 +396,7 @@ export default defineComponent({
         },
         {
           type: 'submit',
-          label: 'Prosseguir',
+          label: route.query.de === 'consulta' ? 'Salvar' : 'Prosseguir',
           class: 'btn btn-block btn-primary',
           containerClass: 'col-md-3 mt-3 mt-md-0',
           block: true,
@@ -390,7 +430,11 @@ export default defineComponent({
 
     getData();
 
-    onMounted(() => addStage());
+    onMounted(() => {
+      if (stages.value.length === 0) {
+        addStage();
+      }
+    });
 
     return {
       data,
@@ -403,6 +447,7 @@ export default defineComponent({
       stages,
       loading,
       addStage,
+      editando,
     };
   },
 });

@@ -252,7 +252,7 @@
                   <template #default="{ map }">
                     <google-maps-markers
                       :markers="markerClosestSchools"
-                      :map="(map as google.maps.Map)"
+                      :map="map"
                       @click="selectFirstSchool"
                     >
                       <template #default="{ marker: markerSlot }">
@@ -263,7 +263,7 @@
                     </google-maps-markers>
                     <google-maps-marker-component
                       v-if="selectedAddress"
-                      :map="(map as google.maps.Map)"
+                      :map="map"
                       :marker="marker"
                     >
                       <template #default>
@@ -274,7 +274,7 @@
                     </google-maps-marker-component>
                     <google-maps-marker-component
                       v-if="adjustAddress"
-                      :map="(map as google.maps.Map)"
+                      :map="map"
                       :marker="markerAdjustedAddress"
                       draggable
                       @new-position="setNewPosition"
@@ -388,7 +388,7 @@
                           )
                         )
                       "
-                      :map="(map as google.maps.Map)"
+                      :map="map"
                       @click="selectSecondSchool"
                     >
                       <template #default="{ marker: markerSlot }">
@@ -398,7 +398,7 @@
                       </template>
                     </google-maps-markers>
                     <google-maps-marker-component
-                      :map="(map as google.maps.Map)"
+                      :map="map"
                       :marker="marker"
                     >
                       <template #default>
@@ -409,7 +409,7 @@
                     </google-maps-marker-component>
                     <google-maps-marker-component
                       v-if="adjustAddress"
-                      :map="(map as google.maps.Map)"
+                      :map="map"
                       :marker="markerAdjustedAddress"
                       draggable
                       @new-position="setNewPosition"
@@ -510,7 +510,7 @@
                             )
                           )
                         "
-                        :map="(map as google.maps.Map)"
+                        :map="map"
                         @click="waiting.school = $event?.id"
                       >
                         <template #default="{ marker: markerSlot }">
@@ -520,7 +520,7 @@
                         </template>
                       </google-maps-markers>
                       <google-maps-marker-component
-                        :map="(map as google.maps.Map)"
+                        :map="map"
                         :marker="marker"
                       >
                         <template #default>

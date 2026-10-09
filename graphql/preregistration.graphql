@@ -218,7 +218,7 @@ type StudentMatchRegistration {
 type PreRegistration {
   id: ID!
   type: PreRegistrationType! @rename(attribute: "preregistration_type_id")
-  position: Int!
+  position: Int
   parent: PreRegistration @belongsTo
   waiting: PreRegistration @belongsTo
   others: [PreRegistration]
@@ -234,7 +234,7 @@ type PreRegistration {
   inClassroom: Classroom @belongsTo
   student: Person @belongsTo
   responsible: Person @belongsTo
-  relationType: RelationType! @rename(attribute: "relation_type_id")
+  relationType: RelationType @rename(attribute: "relation_type_id")
   status: PreRegistrationStatus!
   observation: String
   fields: [PreRegistrationField!]! @hasMany

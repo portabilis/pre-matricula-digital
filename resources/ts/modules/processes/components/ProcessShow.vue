@@ -44,6 +44,17 @@
           />
         </div>
       </div>
+      <div class="d-flex justify-content-between mt-4 mb-3">
+        <h4>Períodos</h4>
+        <x-btn
+          color="primary"
+          outline
+          label="Editar"
+          no-caps
+          no-wrap
+          @click="editarPeriodos()"
+        />
+      </div>
       <div class="row">
         <x-card v-if="process.stages.length === 0" class="col-12" bordered>
           <x-card-section class="text-muted p-3">
@@ -54,6 +65,8 @@
           v-for="stage in process.stages"
           :key="stage.id"
           class="col-12 col-md-6 mb-3"
+          style="cursor: pointer"
+          @click="editarPeriodos(stage.id)"
         >
           <x-card hoverable bordered>
             <x-card-section class="pb-0">
@@ -96,17 +109,25 @@
               ></div>
             </x-card-section>
             <x-card-section
-              v-if="(stage.totalWaitingPreRegistrations as number) > 0"
               class="card-footer d-flex justify-content-center"
             >
               <x-btn
+                v-if="(stage.totalWaitingPreRegistrations as number) > 0"
                 data-test="btn-reject-in-batch"
                 class="mr-2 border-rejected text-rejected"
                 icon="pmd-rejected"
                 label="Indeferir pré-matrículas"
                 no-caps
                 no-wrap
-                @click="showConfirmrejectInBatch(stage)"
+                @click.stop="showConfirmrejectInBatch(stage)"
+              />
+              <x-btn
+                color="primary"
+                outline
+                label="Editar parâmetros"
+                no-caps
+                no-wrap
+                @click.stop="editarPeriodos(stage.id)"
               />
             </x-card-section>
           </x-card>
@@ -499,6 +520,17 @@ const copyProcess = () => {
       name: 'process.update',
       params: { id: processResponse.id },
     });
+  });
+};
+
+const editarPeriodos = (etapa?: string) => {
+  router.push({
+    name: 'process.periods',
+    params: { id: process.value?.id },
+    query: {
+      de: 'consulta',
+      ...(etapa ? { etapa } : {}),
+    },
   });
 };
 

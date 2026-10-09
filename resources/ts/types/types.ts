@@ -234,8 +234,9 @@ export interface GoogleMapsMarker {
   label?: string;
   phone?: string;
   area_code?: number;
-  position: Nullable<google.maps.LatLng>;
-  marker?: google.maps.Marker;
+  position: Nullable<{ lat: number; lng: number }>;
+  lat?: number | null;
+  lng?: number | null;
   config?: Record<string, unknown>;
 }
 export interface ErrorResponse {

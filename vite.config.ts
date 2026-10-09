@@ -43,9 +43,7 @@ export default (config) => {
         minify: true,
         entry: '/resources/ts/main.ts',
         inject: {
-          data: {
-            GOOGLE_API_KEY: env.VITE_GOOGLE_API_KEY,
-          },
+          data: {},
         },
       }),
       manualChunksPlugin(),

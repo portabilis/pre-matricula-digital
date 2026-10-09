@@ -102,7 +102,7 @@ type Process {
   id: ID!
   name: String!
   active: Boolean!
-  schoolYear: SchoolYear! @belongsTo
+  schoolYear: SchoolYear @belongsTo
   grouper: ProcessGrouper @belongsTo
   periods: [Period!]! @belongsToMany
   grades: [ProcessGradeSuggest!]! @hasMany(relation: "gradesWithSuggestedAges")

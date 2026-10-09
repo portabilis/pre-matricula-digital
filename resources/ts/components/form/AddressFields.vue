@@ -58,8 +58,9 @@
 </template>
 
 <script setup lang="ts">
-import { Address, Nullable } from '@/types';
-import { computed, onMounted, ref } from 'vue';
+import { Address } from '@/types';
+import { computed, ref } from 'vue';
+import { localizarEndereco } from '@/maps/localizarEndereco';
 import XField from '@/components/x-form/XField.vue';
 import { useGeneralStore } from '@/store/general';
 import { useVModel } from '@vueuse/core';
@@ -92,7 +93,6 @@ const cityPostalCode = ref();
 const lastAddress = ref<string>();
 const lastNumber = ref<string>();
 
-const geocoder = ref<google.maps.Geocoder>();
 const modelData = useVModel(props, 'data');
 const modelFetchingAddressLatLng = useVModel(props, 'fetchingAddressLatLng');
 
@@ -156,16 +156,16 @@ const updateLatLng = () => {
     return;
   }
 
-  intervalLatLng.value = setTimeout(() => {
-    if (modelFetchingAddressLatLng.value || !geocoder.value) {
+  intervalLatLng.value = setTimeout(async () => {
+    if (modelFetchingAddressLatLng.value) {
+      return;
+    }
+
+    if (!modelData.value.address || !modelData.value.number) {
       return;
     }
 
     modelFetchingAddressLatLng.value = true;
-    if (!modelData.value.address || !modelData.value.number) {
-      modelFetchingAddressLatLng.value = false;
-      return;
-    }
     const address = [
       modelData.value.address,
       modelData.value.number,
@@ -175,28 +175,15 @@ const updateLatLng = () => {
     ]
       .filter((i) => i)
       .join(', ');
-    geocoder.value.geocode(
-      { address },
-      (
-        results: Nullable<google.maps.GeocoderResult[]>,
-        status: google.maps.GeocoderStatus
-      ) => {
-        if (status === 'OK' && results) {
-          modelData.value.lat = results[0].geometry.location.lat();
-          modelData.value.lng = results[0].geometry.location.lng();
-          props.setFieldValue(
-            `${props.name}.lat`,
-            modelData.value.lat as number
-          );
-          props.setFieldValue(
-            `${props.name}.lng`,
-            modelData.value.lng as number
-          );
-          lastAddress.value = modelData.value.address;
-          lastNumber.value = modelData.value.number;
-        }
-      }
-    );
+    const ponto = await localizarEndereco(address);
+    if (ponto) {
+      modelData.value.lat = ponto.lat;
+      modelData.value.lng = ponto.lng;
+      props.setFieldValue(`${props.name}.lat`, ponto.lat);
+      props.setFieldValue(`${props.name}.lng`, ponto.lng);
+      lastAddress.value = modelData.value.address;
+      lastNumber.value = modelData.value.number;
+    }
     modelFetchingAddressLatLng.value = false;
   }, 1000);
 };
@@ -206,10 +193,6 @@ const checkError = (name: string) => {
     props.errors[`${name}.postalCode` as keyof typeof props.errors]
   );
 };
-
-onMounted(() => {
-  geocoder.value = new google.maps.Geocoder();
-});
 
 const ctx = {
   isCityPostalCode,

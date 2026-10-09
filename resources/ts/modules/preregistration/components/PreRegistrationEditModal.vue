@@ -117,7 +117,7 @@
                         <template #default="{ map }">
                           <google-maps-markers
                             :markers="markerClosestSchools"
-                            :map="(map as google.maps.Map)"
+                            :map="map"
                             @click="selectFirstSchool"
                           >
                             <template #default="{ marker: markerSlot }">
@@ -127,7 +127,7 @@
                             </template>
                           </google-maps-markers>
                           <google-maps-marker-component
-                            :map="(map as google.maps.Map)"
+                            :map="map"
                             :marker="marker"
                           >
                             <template #default>

@@ -35,13 +35,13 @@ type Person {
 }
 
 type Address {
-  postalCode: String! @rename(attribute: "postal_code")
-  address: String!
-  number: String!
+  postalCode: String @rename(attribute: "postal_code")
+  address: String
+  number: String
   complement: String
-  neighborhood: String!
+  neighborhood: String
   city: String
-  lat: Float! @rename(attribute: "latitude")
-  lng: Float! @rename(attribute: "longitude")
-  manualChangeLocation: Boolean! @rename(attribute: "manual_change_location")
+  lat: Float @rename(attribute: "latitude")
+  lng: Float @rename(attribute: "longitude")
+  manualChangeLocation: Boolean @rename(attribute: "manual_change_location")
 }
